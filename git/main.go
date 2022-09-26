@@ -36,6 +36,7 @@ func (g *Git) Clone() *Git {
 	g._type = clone
 	g.gQuery = []string{}
 	g.gQuery = append(g.gQuery, []string{"-C", g.rootFolder, "clone", g.repository}...)
+	fmt.Println(g.gQuery)
 	return g
 }
 
@@ -43,15 +44,15 @@ func (g *Git) Clone() *Git {
 //if called the branch will be void
 func (g *Git) Tag(tagname string) *extension {
 	x := new(extension)
-	if len(tagname) == 0 {
-		return x
-	}
-	g.gQuery[3] = "" // to empty extension attached
-	switch g._type {
-	case clone:
-		g.gQuery = append(g.gQuery, []string{"--branch", tagname}...)
-	default:
-		g.gQuery = append(g.gQuery, fmt.Sprintf("tags/%s", tagname))
+
+	remoteTagOrBranch(&g.gQuery) // to empty extension attached
+	if len(tagname) > 0 {
+		switch g._type {
+		case clone:
+			g.gQuery = append(g.gQuery, []string{"--branch", tagname}...)
+		default:
+			g.gQuery = append(g.gQuery, fmt.Sprintf("tags/%s", tagname))
+		}
 	}
 
 	x.gQuery = g.gQuery
@@ -62,18 +63,30 @@ func (g *Git) Tag(tagname string) *extension {
 //if called the tag will be void
 func (g *Git) Branch(branchname string) *extension {
 	x := new(extension)
-	if len(branchname) == 0 {
-		return x
+
+	remoteTagOrBranch(&g.gQuery) // to empty extension attached
+	if len(branchname) > 0 {
+		g.gQuery = append(g.gQuery, []string{"--branch", branchname}...)
 	}
-	g.gQuery[3] = "" // to empty extension attached
-	g.gQuery = append(g.gQuery, []string{"--branch", branchname}...)
 	x.gQuery = g.gQuery
+	fmt.Println(x.gQuery, g.gQuery)
+
 	return x
 }
 
 //execute command
 func (x *extension) Execute() (string, error) {
+	fmt.Println(x.gQuery)
 	cmd := exec.Command("git", x.gQuery...)
+	fmt.Println(cmd.String())
 	o, err := cmd.CombinedOutput()
 	return string(o), err
+}
+
+//remove tag and branch
+func remoteTagOrBranch(data *[]string) {
+	emptystr := ""
+	if len(*data) == 5 {
+		(*data)[4] = emptystr
+	}
 }
