@@ -41,8 +41,8 @@ func (g *Git) Clone() *Git {
 
 //  tag extension
 //if called the branch will be void
-func (g *Git) Tag(tagname string) extension {
-	x := extension{}
+func (g *Git) Tag(tagname string) *extension {
+	x := new(extension)
 	if len(tagname) == 0 {
 		return x
 	}
@@ -60,8 +60,8 @@ func (g *Git) Tag(tagname string) extension {
 
 //  branch extension
 //if called the tag will be void
-func (g *Git) Branch(branchname string) extension {
-	x := extension{}
+func (g *Git) Branch(branchname string) *extension {
+	x := new(extension)
 	if len(branchname) == 0 {
 		return x
 	}
