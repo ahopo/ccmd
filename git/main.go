@@ -22,9 +22,8 @@ const (
 )
 
 //set repo
-func (g *Git) SetRepo(repo string) *Git {
+func (g *Git) SetRepo(repo string) {
 	g.repository = repo
-	return g
 }
 
 //set root folder
@@ -43,6 +42,9 @@ func (g *Git) Clone() *Git {
 //  tag extension
 //if called the branch will be void
 func (g *Git) Tag(tagname string) (x extension) {
+	if len(tagname) == 0 {
+		return x
+	}
 	g.gQuery[3] = "" // to empty extension attached
 	switch g._type {
 	case clone:
@@ -57,6 +59,9 @@ func (g *Git) Tag(tagname string) (x extension) {
 //  branch extension
 //if called the tag will be void
 func (g *Git) Branch(branchname string) (x extension) {
+	if len(branchname) == 0 {
+		return x
+	}
 	g.gQuery[3] = "" // to empty extension attached
 	g.gQuery = append(g.gQuery, []string{"--branch", branchname}...)
 	x.gQuery = g.gQuery
