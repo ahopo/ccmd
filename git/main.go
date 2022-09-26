@@ -22,18 +22,18 @@ const (
 )
 
 //set repo
-func (g Git) SetRepo(repo string) Git {
+func (g *Git) SetRepo(repo string) *Git {
 	g.repository = repo
 	return g
 }
 
 //set root folder
-func (g Git) SetRootFolder(rootfolder string) {
+func (g *Git) SetRootFolder(rootfolder string) {
 	g.rootFolder = rootfolder
 }
 
 //Clone
-func (g Git) Clone() Git {
+func (g *Git) Clone() *Git {
 	g._type = clone
 	g.gQuery = []string{}
 	g.gQuery = append(g.gQuery, []string{"-C", g.rootFolder, "clone", g.repository}...)
@@ -42,7 +42,7 @@ func (g Git) Clone() Git {
 
 //  tag extension
 //if called the branch will be void
-func (g Git) Tag(tagname string) (x extension) {
+func (g *Git) Tag(tagname string) (x extension) {
 	g.gQuery[3] = "" // to empty extension attached
 	switch g._type {
 	case clone:
@@ -56,7 +56,7 @@ func (g Git) Tag(tagname string) (x extension) {
 
 //  branch extension
 //if called the tag will be void
-func (g Git) Branch(branchname string) (x extension) {
+func (g *Git) Branch(branchname string) (x extension) {
 	g.gQuery[3] = "" // to empty extension attached
 	g.gQuery = append(g.gQuery, []string{"--branch", branchname}...)
 	x.gQuery = g.gQuery
