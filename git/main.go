@@ -41,7 +41,7 @@ func (g *Git) Clone() *Git {
 
 //  tag extension
 //if called the branch will be void
-func (g *Git) Tag(tagname string) (x extension) {
+func (g *Git) Tag(tagname string) (x *extension) {
 	if len(tagname) == 0 {
 		return x
 	}
@@ -58,7 +58,7 @@ func (g *Git) Tag(tagname string) (x extension) {
 
 //  branch extension
 //if called the tag will be void
-func (g *Git) Branch(branchname string) (x extension) {
+func (g *Git) Branch(branchname string) (x *extension) {
 	if len(branchname) == 0 {
 		return x
 	}
@@ -69,7 +69,7 @@ func (g *Git) Branch(branchname string) (x extension) {
 }
 
 //execute command
-func (x extension) Execute() (string, error) {
+func (x *extension) Execute() (string, error) {
 	cmd := exec.Command("git", x.gQuery...)
 	o, err := cmd.CombinedOutput()
 	return string(o), err
