@@ -41,10 +41,10 @@ func (g *Git) Clone() *Git {
 
 //  tag extension
 //if called the branch will be void
-func (g *Git) Tag(tagname string) *extension {
+func (g *Git) Tag(tagname string) extension {
 	x := extension{}
 	if len(tagname) == 0 {
-		return &x
+		return x
 	}
 	g.gQuery[3] = "" // to empty extension attached
 	switch g._type {
@@ -55,20 +55,20 @@ func (g *Git) Tag(tagname string) *extension {
 	}
 
 	x.gQuery = g.gQuery
-	return &x
+	return x
 }
 
 //  branch extension
 //if called the tag will be void
-func (g *Git) Branch(branchname string) *extension {
+func (g *Git) Branch(branchname string) extension {
 	x := extension{}
 	if len(branchname) == 0 {
-		return &x
+		return x
 	}
 	g.gQuery[3] = "" // to empty extension attached
 	g.gQuery = append(g.gQuery, []string{"--branch", branchname}...)
 	x.gQuery = g.gQuery
-	return &x
+	return x
 }
 
 //execute command
