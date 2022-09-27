@@ -36,7 +36,14 @@ func (g *Git) Clone() *Git {
 	g._type = clone
 	g.gQuery = []string{}
 	g.gQuery = append(g.gQuery, []string{"-C", g.rootFolder, "clone", g.repository}...)
-	fmt.Println(g.gQuery)
+	return g
+}
+
+//Checkout
+func (g *Git) Checkout() *Git {
+	g._type = clone
+	g.gQuery = []string{}
+	g.gQuery = append(g.gQuery, []string{"-C", g.rootFolder, "checkout", g.repository}...)
 	return g
 }
 
@@ -69,8 +76,6 @@ func (g *Git) Branch(branchname string) *extension {
 		g.gQuery = append(g.gQuery, []string{"--branch", branchname}...)
 	}
 	x.gQuery = g.gQuery
-	fmt.Println(x.gQuery, g.gQuery)
-
 	return x
 }
 
@@ -78,7 +83,6 @@ func (g *Git) Branch(branchname string) *extension {
 func (x *extension) Execute() (string, error) {
 	fmt.Println(x.gQuery)
 	cmd := exec.Command("git", x.gQuery...)
-	fmt.Println(cmd.String())
 	o, err := cmd.CombinedOutput()
 	return string(o), err
 }
