@@ -5,7 +5,7 @@ import (
 	"os/exec"
 )
 
-//base
+//Config of git
 type Config struct {
 	_type       int
 	repository  string
@@ -13,7 +13,9 @@ type Config struct {
 	rootFolder  string
 	superBranch string
 }
-type extension struct {
+
+//for execution of git command
+type execute struct {
 	gQuery []string
 }
 
@@ -39,15 +41,19 @@ func (g *Config) SetSuperBranch(superbranch string) {
 }
 
 //Goto to super branch
-func (g *Config) GotoSuperBranch() {
+func (g *Config) GotoSuperBranch() *execute {
+	x := new(execute)
 	g.gQuery = []string{}
 	g.gQuery = append(g.gQuery, "-C", g.rootFolder, "switch", g.superBranch)
+	return x
 }
 
 //Fetch
-func (g *Config) Fetch() {
+func (g *Config) Fetch() *execute {
+	x := new(execute)
 	g.gQuery = []string{}
 	g.gQuery = append(g.gQuery, "-C", g.rootFolder, "fetch")
+	return x
 }
 
 //Clone
@@ -67,23 +73,25 @@ func (g *Config) Checkout() *Config {
 }
 
 // List all tags
-func (g *Config) GetAllTags() *Config {
+func (g *Config) GetAllTags() *execute {
+	x := new(execute)
 	g.gQuery = []string{}
 	g.gQuery = append(g.gQuery, "-C", g.rootFolder, "tag")
-	return g
+	return x
 }
 
 // List all Branchs
-func (g *Config) GetAllBranchs() *Config {
+func (g *Config) GetAllBranchs() *execute {
+	x := new(execute)
 	g.gQuery = []string{}
 	g.gQuery = append(g.gQuery, "-C", g.rootFolder, "branch", "-r")
-	return g
+	return x
 }
 
 //  tag extension
 //if called the branch will be void
-func (g *Config) Tag(tagname string) *extension {
-	x := new(extension)
+func (g *Config) Tag(tagname string) *execute {
+	x := new(execute)
 
 	remoteTagOrBranch(&g.gQuery) // to empty extension attached
 	if len(tagname) > 0 {
@@ -101,8 +109,8 @@ func (g *Config) Tag(tagname string) *extension {
 
 //  branch extension
 //if called the tag will be void
-func (g *Config) Branch(branchname string) *extension {
-	x := new(extension)
+func (g *Config) Branch(branchname string) *execute {
+	x := new(execute)
 
 	remoteTagOrBranch(&g.gQuery) // to empty extension attached
 	if len(branchname) > 0 {
@@ -113,7 +121,7 @@ func (g *Config) Branch(branchname string) *extension {
 }
 
 //execute command
-func (x *extension) Exec() (string, error) {
+func (x *execute) Exec() (string, error) {
 	fmt.Println(x.gQuery)
 	cmd := exec.Command("git", x.gQuery...)
 	o, err := cmd.CombinedOutput()
