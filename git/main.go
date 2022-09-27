@@ -21,7 +21,7 @@ type execute struct {
 
 const (
 	clone    int = 1
-	CHECKOUT int = 2
+	checkout int = 2
 )
 
 //set repo
@@ -45,6 +45,7 @@ func (g *Config) GotoSuperBranch() *execute {
 	x := new(execute)
 	g.gQuery = []string{}
 	g.gQuery = append(g.gQuery, "-C", g.rootFolder, "switch", g.superBranch)
+	x.gQuery = g.gQuery
 	return x
 }
 
@@ -53,6 +54,7 @@ func (g *Config) Fetch() *execute {
 	x := new(execute)
 	g.gQuery = []string{}
 	g.gQuery = append(g.gQuery, "-C", g.rootFolder, "fetch")
+	x.gQuery = g.gQuery
 	return x
 }
 
@@ -66,7 +68,7 @@ func (g *Config) Clone() *Config {
 
 //Checkout
 func (g *Config) Checkout() *Config {
-	g._type = clone
+	g._type = checkout
 	g.gQuery = []string{}
 	g.gQuery = append(g.gQuery, []string{"-C", g.rootFolder, "checkout", g.repository}...)
 	return g
@@ -77,6 +79,7 @@ func (g *Config) GetAllTags() *execute {
 	x := new(execute)
 	g.gQuery = []string{}
 	g.gQuery = append(g.gQuery, "-C", g.rootFolder, "tag")
+	x.gQuery = g.gQuery
 	return x
 }
 
@@ -85,6 +88,7 @@ func (g *Config) GetAllBranchs() *execute {
 	x := new(execute)
 	g.gQuery = []string{}
 	g.gQuery = append(g.gQuery, "-C", g.rootFolder, "branch", "-r")
+	x.gQuery = g.gQuery
 	return x
 }
 
@@ -113,7 +117,7 @@ func (g *Config) Branch(branchname string) *execute {
 	x := new(execute)
 
 	remoteTagOrBranch(&g.gQuery) // to empty extension attached
-	if len(branchname) > 0 {
+	if len(branchname) > 0 && g._type == clone {
 		g.gQuery = append(g.gQuery, []string{"--branch", branchname}...)
 	}
 	x.gQuery = g.gQuery
