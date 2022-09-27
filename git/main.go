@@ -72,7 +72,7 @@ func (g *Config) Clone() *Config {
 func (g *Config) Checkout() *Config {
 	g._type = checkout
 	g.gQuery = []string{}
-	g.gQuery = append(g.gQuery, []string{"-C", filepath.Join(g.rootFolder, getRepoName(g.repository)), "checkout", g.repository}...)
+	g.gQuery = append(g.gQuery, []string{"-C", filepath.Join(g.rootFolder, getRepoName(g.repository)), "checkout"}...)
 	return g
 }
 
