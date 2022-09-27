@@ -3,6 +3,8 @@ package git
 import (
 	"fmt"
 	"os/exec"
+	"path/filepath"
+	"strings"
 )
 
 //Config of git
@@ -44,7 +46,7 @@ func (g *Config) SetSuperBranch(superbranch string) {
 func (g *Config) GotoSuperBranch() *execute {
 	x := new(execute)
 	g.gQuery = []string{}
-	g.gQuery = append(g.gQuery, "-C", g.rootFolder, "switch", g.superBranch)
+	g.gQuery = append(g.gQuery, "-C", filepath.Join(g.rootFolder, getRepoName(g.repository)), "switch", g.superBranch)
 	x.gQuery = g.gQuery
 	return x
 }
@@ -53,7 +55,7 @@ func (g *Config) GotoSuperBranch() *execute {
 func (g *Config) Fetch() *execute {
 	x := new(execute)
 	g.gQuery = []string{}
-	g.gQuery = append(g.gQuery, "-C", g.rootFolder, "fetch")
+	g.gQuery = append(g.gQuery, "-C", filepath.Join(g.rootFolder, getRepoName(g.repository)), "fetch")
 	x.gQuery = g.gQuery
 	return x
 }
@@ -70,7 +72,7 @@ func (g *Config) Clone() *Config {
 func (g *Config) Checkout() *Config {
 	g._type = checkout
 	g.gQuery = []string{}
-	g.gQuery = append(g.gQuery, []string{"-C", g.rootFolder, "checkout", g.repository}...)
+	g.gQuery = append(g.gQuery, []string{"-C", filepath.Join(g.rootFolder, getRepoName(g.repository)), "checkout", g.repository}...)
 	return g
 }
 
@@ -78,7 +80,7 @@ func (g *Config) Checkout() *Config {
 func (g *Config) GetAllTags() *execute {
 	x := new(execute)
 	g.gQuery = []string{}
-	g.gQuery = append(g.gQuery, "-C", g.rootFolder, "tag")
+	g.gQuery = append(g.gQuery, "-C", filepath.Join(g.rootFolder, getRepoName(g.repository)), "tag")
 	x.gQuery = g.gQuery
 	return x
 }
@@ -87,7 +89,7 @@ func (g *Config) GetAllTags() *execute {
 func (g *Config) GetAllBranchs() *execute {
 	x := new(execute)
 	g.gQuery = []string{}
-	g.gQuery = append(g.gQuery, "-C", g.rootFolder, "branch", "-r")
+	g.gQuery = append(g.gQuery, "-C", filepath.Join(g.rootFolder, getRepoName(g.repository)), "branch", "-r")
 	x.gQuery = g.gQuery
 	return x
 }
@@ -138,4 +140,8 @@ func remoteTagOrBranch(data *[]string) {
 	if len(*data) == 5 {
 		(*data)[4] = emptystr
 	}
+}
+
+func getRepoName(repo string) string {
+	return strings.Split(strings.Split(repo, "/")[len(strings.Split(repo, "/"))-1], ".")[0]
 }
