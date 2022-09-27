@@ -121,6 +121,8 @@ func (g *Config) Branch(branchname string) *execute {
 	remoteTagOrBranch(&g.gQuery) // to empty extension attached
 	if len(branchname) > 0 && g._type == clone {
 		g.gQuery = append(g.gQuery, []string{"--branch", branchname}...)
+	} else if len(branchname) > 0 && g._type == checkout {
+		g.gQuery = append(g.gQuery, branchname)
 	}
 	x.gQuery = g.gQuery
 	return x
